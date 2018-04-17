@@ -41,8 +41,7 @@ public class PasswordBatch implements Runnable{
 		
 		try {
 			CloudTable cloudTable = PasswordCloudStorage.getInstance().getCloudTable();
-			
-			ArrayList<TableResult> test = cloudTable.execute(batchOperation);
+			cloudTable.execute(batchOperation);
 			//remove all entries
 			batchOperation.clear();
 		} catch (StorageException e) {

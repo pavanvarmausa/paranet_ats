@@ -32,7 +32,7 @@ public class PasswordCloudStorage {
 			    
 			    CloudTable cloudTable;
 				try {
-					cloudTable = tableClient.getTableReference("PasswordsTable");
+					cloudTable = tableClient.getTableReference(AppConstants.passwordsTableName);
 					cloudTable.createIfNotExists();
 					
 					return cloudTable;
