@@ -4,13 +4,15 @@ import com.microsoft.azure.storage.table.TableServiceEntity;
 
 public class Breach extends TableServiceEntity {
 	
-	public String password;
+	private String password;
+	private String websites;
 	
 	public Breach(String email, String password) {
 		email = email.replaceAll("#", "");
 		this.partitionKey = email.substring(email.indexOf("@") + 1);
-		this.rowKey = email;
+		this.rowKey = email.substring(0, email.indexOf("@"));
 		this.password = password;
+		this.websites = "Dropbox";
 	}
 
 	public String getPassword() {
@@ -19,6 +21,14 @@ public class Breach extends TableServiceEntity {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getWebsites() {
+		return websites;
+	}
+
+	public void setWebsites(String websites) {
+		this.websites = websites;
 	}
 
 	@Override

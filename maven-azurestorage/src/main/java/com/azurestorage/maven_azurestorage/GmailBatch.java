@@ -43,8 +43,6 @@ public class GmailBatch implements Runnable{
 			CloudTable cloudTable = CloudStorage.getInstance().getCloudTable();
 			
 			ArrayList<TableResult> test = cloudTable.execute(gmailBatch);
-			
-				System.err.println("Batch Return -> Size ->" + test.size());
 			//remove all entries
 			gmailBatch.clear();
 		} catch (StorageException e) {

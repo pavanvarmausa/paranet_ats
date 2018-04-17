@@ -11,12 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.Lists;
-import com.microsoft.azure.storage.table.TableBatchOperation;
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
@@ -29,7 +23,7 @@ public class App
         try
         {            
          // The name of the file to open.
-            String fileName = "/Users/pavankumarvarbhupatiraju/Desktop/dropbox_08jUnk/bf_3.txt";
+            String fileName = "C:\\Users\\pavan\\Downloads\\dropbox_08jUnk\\bf_1.txt";
 
             // This will reference one line at a time
             String line = null;
@@ -42,16 +36,22 @@ public class App
                 // Always wrap FileReader in BufferedReader.
                 BufferedReader bufferedReader = 
                     new BufferedReader(fileReader); 
-                
-//                List<Breach> gmailBucket = new ArrayList<Breach>();   
-//                List<Breach> hotmailBucket = new ArrayList<Breach>();
-//                List<Breach> yahooBucket = new ArrayList<Breach>();
                 int lines = 0;
-                // Create List with 10000 gmail emails
+                
+                // Create List with 10000 domain entries
 				List<Breach> gm = new LinkedList<Breach>();
 				List<Breach> yahooList = new LinkedList<Breach>();
 				List<Breach> hotmailList = new LinkedList<Breach>();
 				List<Breach> googleMailList = new LinkedList<Breach>();
+				List<Breach> hotmailde = new LinkedList<Breach>();
+				List<Breach> hotmailit = new LinkedList<Breach>();
+				List<Breach> earthlink = new LinkedList<Breach>();
+				List<Breach> live = new LinkedList<Breach>();
+				List<Breach> yahoocoin = new LinkedList<Breach>();
+				List<Breach> yahoocojp = new LinkedList<Breach>();
+				List<Breach> comcastnet = new LinkedList<Breach>();
+				List<Breach> hotmailfr = new LinkedList<Breach>();
+				List<Breach> aol = new LinkedList<Breach>();
 				
 				
 				List<Breach> otherList = new ArrayList<Breach>();
@@ -66,191 +66,152 @@ public class App
 	                		System.err.println("Invalid Line @ Line# -> "+ lines);
 	                		continue;
 	                	}
+            			
+            			if (line.contains("@hotmail.de")) {
+            				
+            				if(hotmailde.size() < 20000) {
+                				hotmailde.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(hotmailde);
+        					hotmailde.clear();
+            				continue;
+            			}
+            			
+            			if (line.contains("@hotmail.it")) {
+            				
+            				if(hotmailit.size() < 20000) {
+            					hotmailit.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(hotmailit);
+        					hotmailit.clear();
+            				continue;
+            			}
+            			
+            			if (line.contains("@aol.com:")) {
+            				
+            				if(aol.size() < 20000) {
+            					aol.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(aol);
+        					aol.clear();
+            				continue;
+            			}
+            			
+            			if (line.contains("@yahoo.co.in:")) {
+            				
+            				if(yahoocoin.size() < 20000) {
+            					yahoocoin.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(yahoocoin);
+        					yahoocoin.clear();
+            				continue;
+            			}
+            			
+            			if (line.contains("@comcast.net:")) {
+            				
+            				if(comcastnet.size() < 20000) {
+            					comcastnet.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(comcastnet);
+        					comcastnet.clear();
+            				continue;
+            			}
+            			
+            			if (line.contains("@earthlink.net:")) {
+            				
+            				if(earthlink.size() < 20000) {
+            					earthlink.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(earthlink);
+        					earthlink.clear();
+            				continue;
+            			}
+            			
+            			if (line.contains("@hotmail.fr:")) {
+            				
+            				if(hotmailfr.size() < 20000) {
+            					hotmailfr.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(hotmailfr);
+        					hotmailfr.clear();
+            				continue;
+            			}
+            			
+            			if (line.contains("@live.com:")) {
+            				
+            				if(live.size() < 20000) {
+            					live.add(new Breach(split[0], split[1]));
+                				continue;
+            				}
+        					new BatchProcess(live);
+        					live.clear();
+            				continue;
+            			}
+            			
                 	
             			if (line.contains("@gmail.com:")) {
-            				//gmailBucket.add(new Breach(split[0], split[1]));
             				
             				if(gm.size() < 20000) {
                 				gm.add(new Breach(split[0], split[1]));
                 				continue;
             				}
-            				
-            				//ExecutorService service = Executors.newCachedThreadPool();
-            				
-            				System.err.println("Hit 20000");
-            				System.err.println("start->" + System.currentTimeMillis());
-            				
-            				//Multi start
-        					
-        					final List<List<Breach>> batch = Lists.partition(gm, 100);
-        					ExecutorService service = Executors.newCachedThreadPool();
-        					System.err.println("Batch Size--> " + batch.size());
-        					for (List<Breach> list : batch) {
-        					  // Add your code here
-        						try {
-        							System.err.println("Thread ->" + list.size());
-        							service.execute(new GmailBatch(new TableBatchOperation(), list));
-            					} catch (Exception e1) {
-            						// TODO Auto-generated catch block
-            						System.err.println("Gmail Entry issue @ Line - ");
-            						e1.printStackTrace();
-            					}
-        					}
-        					
-        					System.err.println("before");
-        					service.shutdown();
-        					System.err.println("aftre");
-        					try {
-        						service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        					} catch (InterruptedException e) {
-        					  System.err.println("issue threads");
-        					}
-        					
-        					System.err.println("Finally");
-        					
-        					//Multi End
-            				
-            				System.err.println("end->" + System.currentTimeMillis());
+        					new BatchProcess(gm);
             				gm.clear();
             				continue;
             			}
             			
             			if (line.contains("@googlemail.com:")) {
-            				//gmailBucket.add(new Breach(split[0], split[1]));
             				
-            				if(googleMailList.size() < 5000) {
+            				if(googleMailList.size() < 20000) {
             					googleMailList.add(new Breach(split[0], split[1]));
                 				continue;
             				}
-            				
-            				
-            				
-            				System.err.println("Hit 5000 googlemail");
-            				
-            				//Multi start
         					
-        					final List<List<Breach>> batch = Lists.partition(googleMailList, 100);
-        					ExecutorService service = Executors.newCachedThreadPool();
-        					System.err.println("googlemail Batch Size--> " + batch.size());
-        					for (List<Breach> list : batch) {
-        					  // Add your code here
-        						try {
-        							System.err.println("googlemail Thread ->" + list.size());
-        							service.execute(new GmailBatch(new TableBatchOperation(), list));
-            					} catch (Exception e1) {
-            						// TODO Auto-generated catch block
-            						System.err.println("googlemail Entry issue @ Line - ");
-            						e1.printStackTrace();
-            					}
-        					}
-        					service.shutdown();
-        					try {
-        						service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        					} catch (InterruptedException e) {
-        					  System.err.println("issue threads");
-        					}
-        					
-        					System.err.println("Finally");
-        					
-        					//Multi End
+            				new BatchProcess(googleMailList);
             				googleMailList.clear();
             				continue;
             			}
             			
             			if (line.contains("@yahoo.com:")) {
-            				//gmailBucket.add(new Breach(split[0], split[1]));
             				
-            				if(yahooList.size() < 5000) {
+            				if(yahooList.size() < 20000) {
             					yahooList.add(new Breach(split[0], split[1]));
                 				continue;
             				}
-            				
-            				
-            				
-            				System.err.println("Hit 5000 yahoo");
-            				
-            				//Multi start
-        					
-        					final List<List<Breach>> batch = Lists.partition(yahooList, 100);
-        					ExecutorService service = Executors.newCachedThreadPool();
-        					System.err.println("yahooList Batch Size--> " + batch.size());
-        					for (List<Breach> list : batch) {
-        					  // Add your code here
-        						try {
-        							System.err.println("yahooList Thread ->" + list.size());
-        							service.execute(new GmailBatch(new TableBatchOperation(), list));
-            					} catch (Exception e1) {
-            						// TODO Auto-generated catch block
-            						System.err.println("yahooList Entry issue @ Line - ");
-            						e1.printStackTrace();
-            					}
-        					}
-        					service.shutdown();
-        					try {
-        						service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        					} catch (InterruptedException e) {
-        					  System.err.println("yahooList issue threads");
-        					}
-        					
-        					System.err.println("yahooList Finally");
-        					
-        					//Multi End
+            				new BatchProcess(yahooList);
             				yahooList.clear();
             				continue;
             			}
             			
             			if (line.contains("@hotmail.com:")) {
-            				//gmailBucket.add(new Breach(split[0], split[1]));
             				
-            				if(hotmailList.size() < 5000) {
+            				if(hotmailList.size() < 20000) {
             					hotmailList.add(new Breach(split[0], split[1]));
                 				continue;
             				}
-            				
-            				System.err.println("Hit 5000 hotmailList");
-            				
-            				//Multi start
-        					
-        					final List<List<Breach>> batch = Lists.partition(hotmailList, 100);
-        					ExecutorService service = Executors.newCachedThreadPool();
-        					System.err.println("hotmailList Batch Size--> " + batch.size());
-        					for (List<Breach> list : batch) {
-        					  // Add your code here
-        						try {
-        							System.err.println("hotmailList Thread ->" + list.size());
-        							service.execute(new GmailBatch(new TableBatchOperation(), list));
-            					} catch (Exception e1) {
-            						// TODO Auto-generated catch block
-            						System.err.println("hotmailList Entry issue @ Line - ");
-            						e1.printStackTrace();
-            					}
-        					}
-        					service.shutdown();
-        					try {
-        						service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        					} catch (InterruptedException e) {
-        					  System.err.println("hotmailList issue threads");
-        					}
-        					
-        					System.err.println("hotmailList Finally");
-        					
-        					//Multi End
+            				new BatchProcess(hotmailList);
         					hotmailList.clear();
             				continue;
             			}
             			
             			otherList.add(new Breach(split[0], split[1]));
-            			if(otherList.size() < 100) {
+            			if(otherList.size() < 200) {
              			continue;
             			} else {
-            				System.err.println("Mass ****200*** Insertion Individual size-> " + otherList.size());
             				ExecutorService service = Executors.newCachedThreadPool();
             				otherList.forEach((breach) -> {
             					service.execute(new IndividualBatch(breach));
             				});
         					service.shutdown();
         					try {
-        						service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        						service.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
         					} catch (InterruptedException e) {
         					  System.err.println("IndividualBatch issue threads");
         					}
@@ -268,7 +229,7 @@ public class App
 	    				});
 						service.shutdown();
 						try {
-							service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+							service.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 						} catch (InterruptedException e) {
 						  System.err.println("IndividualBatch issue threads");
 						}
@@ -277,111 +238,57 @@ public class App
                 }
                 
 	            if(gm.size() > 0) {
-	            			final List<List<Breach>> batch = Lists.partition(gm, 100);
-	            			ExecutorService service = Executors.newCachedThreadPool();
-	            			System.err.println("Batch Size -> "+ batch.size());
-	    					for (List<Breach> list : batch) {
-	    						// Add your code here
-	    						try {
-	    							System.err.println("Thread ->" + list.size());
-	    							service.execute(new GmailBatch(new TableBatchOperation(), list));
-	        					} catch (Exception e1) {
-	        						// TODO Auto-generated catch block
-	        						System.err.println("Gmail Entry issue @ Line - ");
-	        						e1.printStackTrace();
-	        					}
-	    					}
-	    					
-	    					System.err.println("small before");
-	    					service.shutdown();
-	    					System.err.println("small aftre");
-	    					try {
-	    						service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-	    					} catch (InterruptedException e) {
-	    					  System.err.println("small issue threads");
-	    					}
-	    					
-	    					System.err.println("gmail endlist Finally");
+	            	new BatchProcess(gm);
 	            }
 	            
 	            if(googleMailList.size() > 0) {
-	        			final List<List<Breach>> batch = Lists.partition(googleMailList, 100);
-	        			ExecutorService service = Executors.newCachedThreadPool();
-	        			System.err.println("googleMailList Batch Size -> "+ batch.size());
-						for (List<Breach> list : batch) {
-							// Add your code here
-							try {
-								System.err.println("Thread ->" + list.size());
-								service.execute(new GmailBatch(new TableBatchOperation(), list));
-	    					} catch (Exception e1) {
-	    						// TODO Auto-generated catch block
-	    						System.err.println("googlemail Entry issue @ Line - ");
-	    						e1.printStackTrace();
-	    					}
-						}
-						
-						service.shutdown();
-						try {
-							service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-						} catch (InterruptedException e) {
-						  System.err.println("googlemaillist issue threads");
-						}
-						
-						System.err.println("googlemaillist endlist Finally");
+	            	new BatchProcess(googleMailList);
 	            }
 	            
 	            if(hotmailList.size() > 0) {
-	        			final List<List<Breach>> batch = Lists.partition(hotmailList, 100);
-	        			ExecutorService service = Executors.newCachedThreadPool();
-	        			System.err.println("hotmailList Batch Size -> "+ batch.size());
-						for (List<Breach> list : batch) {
-							// Add your code here
-							try {
-								System.err.println("Thread ->" + list.size());
-								service.execute(new GmailBatch(new TableBatchOperation(), list));
-	    					} catch (Exception e1) {
-	    						// TODO Auto-generated catch block
-	    						System.err.println("hotmailList Entry issue @ Line - ");
-	    						e1.printStackTrace();
-	    					}
-						}
-						
-						service.shutdown();
-						try {
-							service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-						} catch (InterruptedException e) {
-						  System.err.println("hotmailList issue threads");
-						}
-						
-						System.err.println("hotmailList endlist Finally");
+	            	new BatchProcess(hotmailList);
 	            }
 	            
 	            if(yahooList.size() > 0) {
-	        			final List<List<Breach>> batch = Lists.partition(yahooList, 100);
-	        			ExecutorService service = Executors.newCachedThreadPool();
-	        			System.err.println("yahooList Batch Size -> "+ batch.size());
-						for (List<Breach> list : batch) {
-							// Add your code here
-							try {
-								System.err.println("Thread ->" + list.size());
-								service.execute(new GmailBatch(new TableBatchOperation(), list));
-	    					} catch (Exception e1) {
-	    						// TODO Auto-generated catch block
-	    						System.err.println("yahooList Entry issue @ Line - ");
-	    						e1.printStackTrace();
-	    					}
-						}
-						
-						service.shutdown();
-						try {
-							service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-						} catch (InterruptedException e) {
-						  System.err.println("yahooList issue threads");
-						}
-						
-						System.err.println("yahooList endlist Finally");
+	            	new BatchProcess(yahooList);
 	            }
                 
+	            if(hotmailde.size() > 0) {
+	            	new BatchProcess(hotmailde);
+	            }
+	            
+	            if(hotmailfr.size() > 0) {
+	            	new BatchProcess(hotmailfr);
+	            }
+	            
+	            if(hotmailit.size() > 0) {
+	            	new BatchProcess(hotmailit);
+	            }
+	            
+	            if(yahoocoin.size() > 0) {
+	            	new BatchProcess(yahoocoin);
+	            }
+	            
+	            if(yahoocojp.size() > 0) {
+	            	new BatchProcess(yahoocojp);
+	            }
+	            
+	            if(earthlink.size() > 0) {
+	            	new BatchProcess(earthlink);
+	            }
+	            
+	            if(aol.size() > 0) {
+	            	new BatchProcess(aol);
+	            }
+	            
+	            if(live.size() > 0) {
+	            	new BatchProcess(live);
+	            }
+	            
+	            if(comcastnet.size() > 0) {
+	            	new BatchProcess(comcastnet);
+	            }
+	            
 	            System.err.println("Line ->" + lines);
                 // Always close files.
                 bufferedReader.close();         
@@ -389,14 +296,14 @@ public class App
             catch(FileNotFoundException ex) {
                 System.out.println(
                     "Unable to open file '" + 
-                    fileName + "'");                
+                    fileName + "'");  
+                ex.printStackTrace();
             }
             catch(IOException ex) {
                 System.out.println(
                     "Error reading file '" 
-                    + fileName + "'");                  
-                // Or we could just do this: 
-                // ex.printStackTrace();
+                    + fileName + "'");
+                ex.printStackTrace();
             }
         }
         catch (Exception e)

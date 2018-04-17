@@ -1,0 +1,1 @@
+Class-Path: azure-storage-7.0.0.jar,azure-core-0.8.0.jar
